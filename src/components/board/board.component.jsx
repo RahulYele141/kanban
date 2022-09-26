@@ -1,9 +1,8 @@
 import React from 'react';
-import { Container } from "@mui/material";
 
 const Board = () => {
   return (
-    <div>
+    <div className='grid-container'>
       <div>Column 1</div>
       <div>Column 2</div>
       <div>Column 3</div>

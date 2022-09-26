@@ -6,7 +6,7 @@ import Board from './components/board/board.component';
 function App() {
   return (
     <div className="App">
-      <Board/>
+      <Board />
     </div>
   );
 }
