@@ -1,0 +1,23 @@
+.grid-container {
+    box-sizing: border-box;
+    padding: 8px;
+    margin: 5px;
+}
+
+.column {
+    background-color: #F9f5ee;
+    float: left;
+    width: 13%;
+    padding: 8px;
+    margin: 8px;
+    border: 1px solid grey;
+    height: 700px;
+}
+
+.column-title {
+    background-color: #F3efd1;
+    border: 1px solid black;
+    font-weight: bold;
+    padding: 8px;
+    margin: 5px;
+}
