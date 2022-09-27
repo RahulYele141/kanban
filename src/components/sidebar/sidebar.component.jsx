@@ -1,11 +1,11 @@
-import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Toolbar } from "@mui/material";
+import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
 import React from "react";
 
 const Sidebar = () => {
     console.log('sidebar');
     return (
         <div>
-            <Drawer variant="permanent"
+            <Drawer variant="temporary"
                 ModalProps={{
                     keepMounted: true,
                 }} >
@@ -13,22 +13,26 @@ const Sidebar = () => {
                 <div>
                     <Toolbar />
                     <Divider />
-                    <ListSubheader>Planning</ListSubheader>
                     <List>
-                        {['Dashboard', 'Kanban Board', 'Issues', 'Components'].map((text, index) => (
+                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                             <ListItem key={text} disablePadding>
                                 <ListItemButton>
+                                    <ListItemIcon>
+                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    </ListItemIcon>
                                     <ListItemText primary={text} />
                                 </ListItemButton>
                             </ListItem>
                         ))}
                     </List>
                     <Divider />
-                    <ListSubheader>Development</ListSubheader>
                     <List>
-                        {['Code', 'Releases'].map((text, index) => (
+                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
                             <ListItem key={text} disablePadding>
                                 <ListItemButton>
+                                    <ListItemIcon>
+                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    </ListItemIcon>
                                     <ListItemText primary={text} />
                                 </ListItemButton>
                             </ListItem>
