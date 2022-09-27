@@ -1,10 +1,8 @@
 .grid-container {
-    justify-content: center;
-    /* height: 100%; */
     padding: 8px;
     margin: 5px;
-    height: 500px;
-    /* overflow-y: scroll; */
+    height: 700px;
+    align-self: baseline;
 }
 
 .column {
@@ -16,7 +14,7 @@
     padding: 8px;
     margin: 5px;
     border: 1px solid grey;
-    height: 500px;
+    height: 600px;
     overflow-y: scroll;
 }
 

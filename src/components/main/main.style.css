@@ -1,0 +1,20 @@
+.main-container {
+    height: auto;
+    width: auto;
+}
+
+
+.board {
+    width: 85%;
+    float: right;
+}
+
+.sidebar {
+    float: left;
+    top: 15%;
+}
+
+.navbar {
+    width: 100%;
+    left: 0;
+}

@@ -4,11 +4,12 @@ import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import React from "react";
+import './sidebar.style.css'
 
 const Sidebar = () => {
     console.log('sidebar');
     return (
-        <div>
+        <div className="sidebar">
             <Drawer variant="permanent"
                 ModalProps={{
                     keepMounted: true,
