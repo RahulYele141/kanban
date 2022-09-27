@@ -1,19 +1,20 @@
-import { Card, CardContent } from "@mui/material";
+import { Card, Button, CardActions, CardContent } from "@mui/material";
 import React from "react";
-import Draggable from "react-draggable";
 
 
-const Kcard = () => {
+const Kcard = ({ title }) => {
 
     return (
-        <Draggable>
+        <div className="card">
             <Card >
                 <CardContent>
-                    name
+                    {title}
                 </CardContent>
+                <CardActions>
+                    <Button >more...</Button>
+                </CardActions>
             </Card>
-        </Draggable>
-
+        </div>
     )
 }
 

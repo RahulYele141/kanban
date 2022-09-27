@@ -1,23 +1,41 @@
 .grid-container {
-    box-sizing: border-box;
+    justify-content: center;
+    /* height: 100%; */
     padding: 8px;
     margin: 5px;
+    height: 500px;
+    /* overflow-y: scroll; */
 }
 
 .column {
-    background-color: #F9f5ee;
+    flex-direction: column;
+    align-items: center;
+    background-color: #d7f3ec;
     float: left;
     width: 13%;
     padding: 8px;
-    margin: 8px;
+    margin: 5px;
     border: 1px solid grey;
-    height: 700px;
+    height: 500px;
+    overflow-y: scroll;
 }
 
+
 .column-title {
-    background-color: #F3efd1;
+    background-color: #C9ece3;
     border: 1px solid black;
     font-weight: bold;
     padding: 8px;
-    margin: 5px;
+    height: auto;
+
+}
+
+
+.column::-webkit-scrollbar {
+    display: none;
+}
+
+.column {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
