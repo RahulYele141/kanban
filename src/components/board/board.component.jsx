@@ -95,14 +95,23 @@ const Board = () => {
     const [isButtonOpen, setIsButtonOpen] = useState();
     const [issue, setIssue] = useState('');
 
-    const onClickCreateIssue = (index) => {
+    const onClickCreateIssue = () => {
         return setIsTextOpen(true)
     }
 
     const showCreateIssue = (event, columnId) => {
-        console.log(event._targetInst.key, columnId);
+        //   console.log(event._targetInst.key, columnId);
         if (event._targetInst.key === columnId) return setIsButtonOpen(event._targetInst.key);
 
+    }
+
+    const hideCreateIssue = (event, columnId) => {
+
+        console.log(event._targetInst.key, 'columnId', columnId);
+        if (event._targetInst.key === columnId) {
+            setIsButtonOpen();
+            setIsTextOpen(false)
+        }
     }
 
     const onEnterKeyPress = (event) => {
@@ -130,7 +139,7 @@ const Board = () => {
                         <Droppable droppableId={columnId} key={columnId}>
                             {(provided, snapshot) => {
                                 return (
-                                    <div onMouseLeave={() => { }} onMouseEnter={(event) => showCreateIssue(event, columnId)} key={columnId} className='column' {...provided.droppableProps}
+                                    <div onMouseLeave={(event) => { hideCreateIssue(event, columnId) }} onMouseEnter={(event) => showCreateIssue(event, columnId)} key={columnId} className='column' {...provided.droppableProps}
                                         ref={provided.innerRef} style={{ backgroundColor: snapshot.isDraggingOver ? 'lightBlue' : '#f4f5f7' }} >
 
                                         <div className='column-title'>{column.name}</div><hr></hr>
@@ -166,7 +175,7 @@ const Board = () => {
                                                         </Draggable>)
                                                 })}
                                         </div>
-                                        <Button style={isButtonOpen === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue(ind) }}>Create a issue</Button>
+                                        <Button style={isButtonOpen === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue() }}>Create a issue</Button>
 
                                         <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isButtonOpen === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
                                     </div>
