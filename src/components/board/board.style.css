@@ -1,31 +1,33 @@
 .grid-container {
-    padding: 8px;
-    margin: 5px;
-    height: 700px;
-    align-self: baseline;
+    padding: 40px;
+    height: 500px;
 }
 
 .column {
     flex-direction: column;
-    align-items: center;
-    background-color: #d7f3ec;
     float: left;
-    width: 13%;
-    padding: 8px;
+    width: 170px;
+    padding: 5px;
     margin: 5px;
     border: 1px solid grey;
-    height: 600px;
+    min-height: 200px;
     overflow-y: scroll;
+    flex-wrap: wrap;
 }
 
 
 .column-title {
-    background-color: #C9ece3;
-    border: 1px solid black;
+    background-color: #f4f5f7;
+    color: #7882a1;
     font-weight: bold;
     padding: 8px;
-    height: auto;
+    height: 60px;
+    position: sticky;
+    justify-content: center;
+}
 
+.column-body {
+    height: auto;
 }
 
 

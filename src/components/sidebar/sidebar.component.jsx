@@ -9,49 +9,50 @@ import './sidebar.style.css'
 const Sidebar = () => {
     console.log('sidebar');
     return (
-        <div className="sidebar">
-            <Drawer variant="permanent"
-                ModalProps={{
-                    keepMounted: true,
-                }} >
+        // <div className="sidebar">
+        <Drawer variant="permanent"
+            PaperProps={{ sx: { marginTop: '100px', } }}
+            ModalProps={{
+                // keepMounted: true,
+                height: 50
+            }} sx={{}} >
 
-                <div>
-                    <Toolbar />
-                    <Divider />
-                    <ListItemText>Planning</ListItemText>
-                    <List>
-                        {['Dashboard', 'Kanban', 'Issues', 'Reports'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemIcon style={{ color: '#404BF5' }}>
-                                    {
-                                        index % 2 === 0 ? <TrendingUpRoundedIcon /> : <DashboardRoundedIcon />
-                                    }
-                                </ListItemIcon>
-                                <ListItemButton>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <ListItemText>Development</ListItemText>
-                    <List>
-                        {['Code', 'Releases'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemIcon style={{ color: '#66F35B' }}>
-                                    {
-                                        index % 2 === 0 ? <CodeOffIcon /> : <DeveloperBoardIcon />
-                                    }
-                                </ListItemIcon>
-                                <ListItemButton>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </div>
-            </Drawer>
-        </div>)
+            <div className="sidebar">
+                <ListItemText>Planning</ListItemText>
+                <List>
+                    {['Dashboard', 'Kanban', 'Issues', 'Reports'].map((text, index) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemIcon style={{ color: '#404BF5' }}>
+                                {
+                                    index % 2 === 0 ? <TrendingUpRoundedIcon /> : <DashboardRoundedIcon />
+                                }
+                            </ListItemIcon>
+                            <ListItemButton>
+                                <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <ListItemText>Development</ListItemText>
+                <List>
+                    {['Code', 'Releases'].map((text, index) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemIcon style={{ color: '#66F35B' }}>
+                                {
+                                    index % 2 === 0 ? <CodeOffIcon /> : <DeveloperBoardIcon />
+                                }
+                            </ListItemIcon>
+                            <ListItemButton>
+                                <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            </div>
+        </Drawer>
+        // </div >
+    )
 }
 
 export default Sidebar

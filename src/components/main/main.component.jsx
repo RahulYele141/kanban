@@ -6,14 +6,15 @@ const Main = () => {
     return (
         <div className="main-container">
             <div className='navbar'>
-                <Navbar ></Navbar>
-            </div>
-            <div className='board'>
-                <Board ></Board>
+                <Navbar />
             </div>
             <div className='sidebar'>
-                <Sidebar ></Sidebar>
+                <Sidebar />
             </div>
+            <div className='board'>
+                <Board />
+            </div>
+
         </div>
     )
 }

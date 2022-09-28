@@ -10,7 +10,7 @@ const Navbar = () => {
     return (<AppBar position="static" style={{ backgroundColor: 'white' }}>
         <Container maxWidth="xl" >
             <Toolbar disableGutters>
-                <MenuOutlinedIcon sx={{ color: 'black', display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                <MenuOutlinedIcon sx={{ color: 'black', display: { xs: 'none', md: 'flex' }, mr: 1 }} onClick={()=>{} }/>
                 <Typography
                     variant="h6"
                     noWrap
