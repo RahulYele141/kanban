@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './board.style.css'
 import Kcard from '../card/card.component';
 import uuid from "uuid/v4";
-import { Button, Modal, TextField, Typography } from '@mui/material';
+import { Button, Modal, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 
 const itemsOfColumn =
@@ -51,34 +51,27 @@ const workColumns = {
 const onDragEnd = (result, columns, setColumn) => {
     if (!result.destination) return;
     const { source, destination } = result;
-    console.log(result, 'source:', source, 'dest', destination);
-
     if (source.droppableId !== destination.droppableId) {
 
         const sourceColumnData = columns[source.droppableId]
         const destinationColumnData = columns[destination.droppableId]
-        // console.log(source.droppableId, '\n', destination.droppableId);
         const sourceItemsData = [...sourceColumnData.items]
         const destItemsData = [...destinationColumnData.items]
-        // console.log('items', sourceItemsData, destItemsData);
-
         const [removed] = sourceItemsData.splice(source.index, 1)
-        console.log(source.index);
-
         destItemsData.splice(destination.index, 0, removed)
+
         setColumn({
             ...columns, [source.droppableId]: {
                 ...sourceColumnData, items: sourceItemsData
             }, [destination.droppableId]: { ...destinationColumnData, items: destItemsData }
         })
+
     } else {
         const column = columns[source.droppableId];
-        console.log('else: column:', column);
         const copiedItems = [...column.items];
-        console.log('copied items:', copiedItems);
         const [removed] = copiedItems.splice(source.index, 1);
-        console.log(source.index);
         copiedItems.splice(destination.index, 0, removed);
+
         setColumn({
             ...columns,
             [source.droppableId]: {
@@ -93,7 +86,7 @@ const onDragEnd = (result, columns, setColumn) => {
 const Board = () => {
     const [columns, setColumn] = useState(workColumns);
     const [isTextOpen, setIsTextOpen] = useState(false);
-    const [isButtonOpen, setIsButtonOpen] = useState();
+    const [isId, setIsId] = useState();
     const [issue, setIssue] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -102,28 +95,24 @@ const Board = () => {
     }
 
     const showCreateIssue = (event, columnId) => {
-        //   console.log(event._targetInst.key, columnId);
-        if (event._targetInst.key === columnId) return setIsButtonOpen(event._targetInst.key);
-
+        if (event._targetInst.key === columnId) return setIsId(event._targetInst.key);
     }
 
     const hideCreateIssue = (event, columnId) => {
-        // console.log(event._targetInst.key, 'columnId', columnId);
         if (event._targetInst.key === columnId) {
-            setIsButtonOpen();
+            setIsId();
             setIsTextOpen(false)
         }
     }
 
     const onEnterKeyPress = (event) => {
-        // console.log(typeof issue, issue.length);
         if (issue.length > 1 && event.key === 'Enter') {
-            const columnsData = columns[isButtonOpen]
+            const columnsData = columns[isId]
             const columnItemsData = [...columnsData.items]
             columnItemsData.push({ id: uuid(), content: issue })
 
             setColumn({
-                ...columns, [isButtonOpen]: {
+                ...columns, [isId]: {
                     ...columnsData,
                     items: columnItemsData
                 }
@@ -132,20 +121,37 @@ const Board = () => {
             setIssue('')
         }
     }
-    const createAIssue = () => {
-        console.log('new issue');
-        return setIsModalOpen(true)
-    }
+    const createAIssue = (e) => {
+        const details = Object.keys(columns)[0];
+        setIsId(details)
+        return (setIsModalOpen(true), setIssue(''))
+    };
 
-    const createAIssueFromButton = () => {
-        console.log('clicked');
-        console.log(issue, isButtonOpen);
-        const columnsData = columns[isButtonOpen]
+
+    const createIssueFromButton = () => {
+        const columnsData = columns[isId]
         const columnItemsData = [...columnsData.items]
         columnItemsData.push({ id: uuid(), content: issue })
 
         setColumn({
-            ...columns, [isButtonOpen]: {
+            ...columns, [isId]: {
+                ...columnsData,
+                items: columnItemsData
+            }
+        })
+        setIsTextOpen(false)
+        setIsModalOpen(false)
+        setIssue('')
+    }
+
+    const deleteIssue = (index) => {
+
+        const columnsData = columns[isId]
+        const columnItemsData = [...columnsData.items]
+        columnItemsData.splice(index, 1)
+
+        setColumn({
+            ...columns, [isId]: {
                 ...columnsData,
                 items: columnItemsData
             }
@@ -155,25 +161,7 @@ const Board = () => {
         setIsModalOpen(false)
     }
 
-    const deleteIssue = (index) => {
-        console.log('delete here..');
-        const columnsData = columns[isButtonOpen]
-        console.log(columnsData, isButtonOpen);
-        const columnItemsData = [...columnsData.items]
-        console.log('original', columnItemsData);
-        columnItemsData.splice(index, 1)
-        console.log('updated', columnItemsData);
-        console.log('clicked', index);
-        setColumn({
-            ...columns, [isButtonOpen]: {
-                ...columnsData,
-                items: columnItemsData
-            }
-        })
-        setIsTextOpen(false)
-        setIssue('')
-        setIsModalOpen(false)
-    }
+    console.log(isId);
 
     return (
         <div className='grid-container'>
@@ -208,8 +196,7 @@ const Board = () => {
                                                                             color: "black",
                                                                             ...provided.draggableProps.style
                                                                         }} onClick={() => {
-                                                                            console.log('onClick', columnId)
-                                                                            return setIsButtonOpen(columnId)
+                                                                            return setIsId(columnId)
                                                                         }}>
                                                                         <Kcard title={item.content} onHandleClick={() => deleteIssue(index)}>
 
@@ -222,9 +209,9 @@ const Board = () => {
                                                         </Draggable>)
                                                 })}
                                         </div>
-                                        <Button style={isButtonOpen === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue() }}>Create a issue</Button>
+                                        <Button style={isId === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue() }}>Create a issue</Button>
 
-                                        <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isButtonOpen === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
+                                        <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isId === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
                                     </div>
                                 )
 
@@ -233,39 +220,39 @@ const Board = () => {
                     )
                 }
                 )}
-                <Button onClick={() => createAIssue()}>Create</Button>
-                <Modal
-                    className='modal-box'
-                    open={true}
-                    onClose={() => { setIsModalOpen(false) }}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                    sx={isModalOpen ? { display: 'block', } : { display: 'none' }}
-                >
-                    <Box sx={{
-
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'white',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                    }}>
-                        <select onChange={(e) => setIsButtonOpen(e.target.value)} style={{ margin: '10px', padding: '8px', border: 'black solid 1px' }} >
-                            {Object.entries(columns).map(([columnId, column], ind) => (<option key={columnId} value={columnId}
-                            >{column.name}</option>))}
-                        </select>
-
-                        <TextField sx={{ margin: '10px', padding: '10px', backgroundColor: 'white' }} onChange={(e) => { setIssue(e.target.value) }}></TextField><br />
-                        <Button variant='contained' onClick={() => createAIssueFromButton()}>Create</Button>
-
-                    </Box>
-                </Modal>
             </DragDropContext>
+            <Button variant='contained' onClick={(e) => createAIssue(e)}>Create</Button>
+            <Modal
+                className='modal-box'
+                open={true}
+                onClose={() => { setIsModalOpen(false) }}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={isModalOpen ? { display: 'block', } : { display: 'none' }}
 
+            >
+                <Box sx={{
+
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'white',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    p: 4,
+                }}>
+                    <select onChange={(e) => setIsId(e.target.value)} style={{ margin: '10px', padding: '8px', border: 'black solid 1px' }} >
+                        {Object.entries(columns).map(([columnId, column], ind) => (<option key={columnId} value={columnId}
+                        >{column.name}</option>))}
+                    </select>
+
+                    <TextField value={issue} sx={{ margin: '10px', padding: '10px', backgroundColor: 'white' }} onChange={(e) => { setIssue(e.target.value) }}></TextField><br />
+
+                    <Button variant='contained' onClick={() => createIssueFromButton()} sx={{ float: 'right' }}>Create a issue</Button>
+                </Box>
+            </Modal>
         </div>
     );
 };
