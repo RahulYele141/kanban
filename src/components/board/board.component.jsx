@@ -156,7 +156,9 @@ const Board = () => {
     }
 
     const deleteIssue = (index) => {
+        console.log('delete here..');
         const columnsData = columns[isButtonOpen]
+        console.log(columnsData, isButtonOpen);
         const columnItemsData = [...columnsData.items]
         console.log('original', columnItemsData);
         columnItemsData.splice(index, 1)
@@ -205,6 +207,9 @@ const Board = () => {
                                                                             margin: "5px 5px ",
                                                                             color: "black",
                                                                             ...provided.draggableProps.style
+                                                                        }} onClick={() => {
+                                                                            console.log('onClick', columnId)
+                                                                            return setIsButtonOpen(columnId)
                                                                         }}>
                                                                         <Kcard title={item.content} onHandleClick={() => deleteIssue(index)}>
 

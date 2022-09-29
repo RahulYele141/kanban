@@ -4,7 +4,7 @@ import './card.style.css'
 
 const Kcard = ({ title, onHandleClick }) => {
     const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => { return setOpen(true); };
     const handleClose = () => {
         console.log(open);
         return setOpen(false)
