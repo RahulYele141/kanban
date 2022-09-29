@@ -2,7 +2,7 @@ import { Card, Button, CardActions, CardContent, Modal, Box, Typography } from "
 import React, { useState } from "react";
 import './card.style.css'
 
-const Kcard = ({ title }) => {
+const Kcard = ({ title, onHandleClick }) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
@@ -36,12 +36,10 @@ const Kcard = ({ title }) => {
                             boxShadow: 24,
                             p: 4,
                         }}>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                This is a Modal
+                            <Typography sx={{ margin: '10px', padding: '10px' }} id="modal-modal-title" variant="h6" component="h2">
+                                {title}
                             </Typography>
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                This is <br /> modal text
-                            </Typography>
+                            <Button onClick={onHandleClick} variant="contained" style={{ color: 'white', backgroundColor: 'red' }}>Delete</Button>
                         </Box>
                     </Modal> : <Button onClick={handleOpen}>more...</Button>
                     }

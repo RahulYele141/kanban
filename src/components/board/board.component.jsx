@@ -3,7 +3,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './board.style.css'
 import Kcard from '../card/card.component';
 import uuid from "uuid/v4";
-import { Button, TextField } from '@mui/material';
+import { Button, Modal, TextField, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 
 const itemsOfColumn =
     [{
@@ -56,13 +57,13 @@ const onDragEnd = (result, columns, setColumn) => {
 
         const sourceColumnData = columns[source.droppableId]
         const destinationColumnData = columns[destination.droppableId]
-        console.log(source.droppableId, '\n', destination.droppableId);
+        // console.log(source.droppableId, '\n', destination.droppableId);
         const sourceItemsData = [...sourceColumnData.items]
         const destItemsData = [...destinationColumnData.items]
-        console.log('items', sourceItemsData, destItemsData);
+        // console.log('items', sourceItemsData, destItemsData);
 
         const [removed] = sourceItemsData.splice(source.index, 1)
-        console.log(removed);
+        console.log(source.index);
 
         destItemsData.splice(destination.index, 0, removed)
         setColumn({
@@ -94,6 +95,7 @@ const Board = () => {
     const [isTextOpen, setIsTextOpen] = useState(false);
     const [isButtonOpen, setIsButtonOpen] = useState();
     const [issue, setIssue] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onClickCreateIssue = () => {
         return setIsTextOpen(true)
@@ -106,8 +108,7 @@ const Board = () => {
     }
 
     const hideCreateIssue = (event, columnId) => {
-
-        console.log(event._targetInst.key, 'columnId', columnId);
+        // console.log(event._targetInst.key, 'columnId', columnId);
         if (event._targetInst.key === columnId) {
             setIsButtonOpen();
             setIsTextOpen(false)
@@ -115,7 +116,7 @@ const Board = () => {
     }
 
     const onEnterKeyPress = (event) => {
-        console.log(typeof issue, issue.length);
+        // console.log(typeof issue, issue.length);
         if (issue.length > 1 && event.key === 'Enter') {
             const columnsData = columns[isButtonOpen]
             const columnItemsData = [...columnsData.items]
@@ -131,6 +132,47 @@ const Board = () => {
             setIssue('')
         }
     }
+    const createAIssue = () => {
+        console.log('new issue');
+        return setIsModalOpen(true)
+    }
+
+    const createAIssueFromButton = () => {
+        console.log('clicked');
+        console.log(issue, isButtonOpen);
+        const columnsData = columns[isButtonOpen]
+        const columnItemsData = [...columnsData.items]
+        columnItemsData.push({ id: uuid(), content: issue })
+
+        setColumn({
+            ...columns, [isButtonOpen]: {
+                ...columnsData,
+                items: columnItemsData
+            }
+        })
+        setIsTextOpen(false)
+        setIssue('')
+        setIsModalOpen(false)
+    }
+
+    const deleteIssue = (index) => {
+        const columnsData = columns[isButtonOpen]
+        const columnItemsData = [...columnsData.items]
+        console.log('original', columnItemsData);
+        columnItemsData.splice(index, 1)
+        console.log('updated', columnItemsData);
+        console.log('clicked', index);
+        setColumn({
+            ...columns, [isButtonOpen]: {
+                ...columnsData,
+                items: columnItemsData
+            }
+        })
+        setIsTextOpen(false)
+        setIssue('')
+        setIsModalOpen(false)
+    }
+
     return (
         <div className='grid-container'>
             <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumn)}>
@@ -164,7 +206,7 @@ const Board = () => {
                                                                             color: "black",
                                                                             ...provided.draggableProps.style
                                                                         }}>
-                                                                        <Kcard title={item.content} >
+                                                                        <Kcard title={item.content} onHandleClick={() => deleteIssue(index)}>
 
                                                                         </Kcard>
 
@@ -180,15 +222,46 @@ const Board = () => {
                                         <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isButtonOpen === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
                                     </div>
                                 )
-                            }}
 
+                            }}
                         </Droppable>
                     )
                 }
                 )}
+                <Button onClick={() => createAIssue()}>Create</Button>
+                <Modal
+                    className='modal-box'
+                    open={true}
+                    onClose={() => { setIsModalOpen(false) }}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                    sx={isModalOpen ? { display: 'block', } : { display: 'none' }}
+                >
+                    <Box sx={{
+
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'white',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                    }}>
+                        <select onChange={(e) => setIsButtonOpen(e.target.value)} style={{ margin: '10px', padding: '8px', border: 'black solid 1px' }} >
+                            {Object.entries(columns).map(([columnId, column], ind) => (<option key={columnId} value={columnId}
+                            >{column.name}</option>))}
+                        </select>
+
+                        <TextField sx={{ margin: '10px', padding: '10px', backgroundColor: 'white' }} onChange={(e) => { setIssue(e.target.value) }}></TextField><br />
+                        <Button variant='contained' onClick={() => createAIssueFromButton()}>Create</Button>
+
+                    </Box>
+                </Modal>
             </DragDropContext>
 
-        </div >
+        </div>
     );
 };
 
