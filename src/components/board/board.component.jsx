@@ -85,6 +85,7 @@ const onDragEnd = (result, columns, setColumn) => {
 
 const Board = () => {
     const [columns, setColumn] = useState(workColumns);
+    const [isEditing, setIsEditing] = useState(false)
     const [isTextOpen, setIsTextOpen] = useState(false);
     const [isId, setIsId] = useState();
     const [issue, setIssue] = useState('');
@@ -105,14 +106,14 @@ const Board = () => {
         }
     }
 
-    const onEnterKeyPress = (event, title) => {
-        console.log('event', event);
-        console.log('issue:', issue, 'title:', title);
-        if (issue.length > 1 && event.key === 'Enter') {
+    const onEnterKeyPress = (event, id, index) => {
+        // console.log('event', event.target.value, 'issue', issue, 'isId:', isId);
+        if (isEditing === false && issue.length > 1 && event.key === 'Enter') {
+            console.log('if');
             const columnsData = columns[isId]
             const columnItemsData = [...columnsData.items]
             columnItemsData.push({ id: uuid(), content: issue })
-
+            console.log(columnItemsData);
             setColumn({
                 ...columns, [isId]: {
                     ...columnsData,
@@ -120,9 +121,27 @@ const Board = () => {
                 }
             })
             setIsTextOpen(false)
-            setIssue('')
+            setIssue('');
+            setIsEditing(false)
+        } else if (isEditing === true && issue.length > 1 && event.key === 'Enter') {
+            console.log('else:', isId, 'title', id);
+            const columnsData = columns[isId]
+            const columnItemsData = [...columnsData.items]
+            columnItemsData[index].content = issue
+            console.log(columnItemsData[index], index, id);
+            console.log('columnItemsData', columnItemsData);
+            setColumn({
+                ...columns, [isId]: {
+                    ...columnsData,
+                    items: columnItemsData
+                }
+            })
+            setIsTextOpen(false)
+            setIssue('');
+            setIsEditing(false)
         }
     }
+
     const createIssue = (e) => {
         const details = Object.keys(columns)[0];
         setIsId(details)
@@ -170,9 +189,9 @@ const Board = () => {
             id: uuid(),
             items: [],
         }
-
-
     }
+
+    console.log('isEditing', isEditing);
 
     return (
         <div >
@@ -212,7 +231,11 @@ const Board = () => {
                                                                             }} onClick={() => {
                                                                                 return setIsId(columnId)
                                                                             }}>
-                                                                            <Kcard onKeyUp={(event) => onEnterKeyPress(event, item.content)} title={item.content} onHandleClick={() => deleteIssue(index)} onChange={(e) => { setIssue(e.target.value) }} >
+                                                                            <Kcard setIsEditing={setIsEditing} isEditing={isEditing} onKeyUp={(event) => onEnterKeyPress(event, item.id, index)} title={item.content} onHandleClick={() => deleteIssue(index)} onChange={(e) => {
+                                                                                console.log('onchange', e.target.value);
+                                                                                e.preventDefault();
+                                                                                setIssue(e.target.value);
+                                                                            }} >
 
                                                                             </Kcard>
 
