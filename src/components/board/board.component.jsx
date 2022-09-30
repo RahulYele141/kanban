@@ -105,7 +105,9 @@ const Board = () => {
         }
     }
 
-    const onEnterKeyPress = (event) => {
+    const onEnterKeyPress = (event, title) => {
+        console.log('event', event);
+        console.log('issue:', issue, 'title:', title);
         if (issue.length > 1 && event.key === 'Enter') {
             const columnsData = columns[isId]
             const columnItemsData = [...columnsData.items]
@@ -121,7 +123,7 @@ const Board = () => {
             setIssue('')
         }
     }
-    const createAIssue = (e) => {
+    const createIssue = (e) => {
         const details = Object.keys(columns)[0];
         setIsId(details)
         return (setIsModalOpen(true), setIssue(''))
@@ -161,67 +163,79 @@ const Board = () => {
         setIsModalOpen(false)
     }
 
-    console.log(isId);
+    const onAddColumn = () => {
+        console.log('clicked');
+        columns[uuid()] = {
+            name: 'Done',
+            id: uuid(),
+            items: [],
+        }
+
+
+    }
 
     return (
-        <div className='grid-container'>
-            <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumn)}>
-                {Object.entries(columns).map(([columnId, column], ind) => {
-                    return (
-                        <Droppable droppableId={columnId} key={columnId}>
-                            {(provided, snapshot) => {
-                                return (
-                                    <div onMouseLeave={(event) => { hideCreateIssue(event, columnId) }} onMouseEnter={(event) => showCreateIssue(event, columnId)} key={columnId} className='column' {...provided.droppableProps}
-                                        ref={provided.innerRef} style={{ backgroundColor: snapshot.isDraggingOver ? 'lightBlue' : '#f4f5f7' }} >
+        <div >
+            <Button variant='outlined' onClick={() => onAddColumn()} sx={{ margin: '10px' }}>Create a column</Button>
+            <Button variant='contained' sx={{ float: 'top' }} onClick={(e) => createIssue(e)}>Create a issue</Button><br />
+            <div className='grid-container'>
+                <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumn)}>
+                    {Object.entries(columns).map(([columnId, column], ind) => {
+                        return (
+                            <Droppable droppableId={columnId} key={columnId}>
+                                {(provided, snapshot) => {
+                                    return (
+                                        <div onMouseLeave={(event) => { hideCreateIssue(event, columnId) }} onMouseEnter={(event) => showCreateIssue(event, columnId)} key={columnId} className='column' {...provided.droppableProps}
+                                            ref={provided.innerRef} style={{ backgroundColor: snapshot.isDraggingOver ? 'lightBlue' : '#f4f5f7' }} >
 
-                                        <div className='column-title'>{column.name}</div><hr></hr>
-                                        <div>
-                                            {
-                                                column.items.map((item, index) => {
-                                                    return (
-                                                        <Draggable
-                                                            key={item.id}
-                                                            draggableId={item.id}
-                                                            index={index}
-                                                        >
-                                                            {(provided, snapshot) => {
-                                                                return (
+                                            <div className='column-title'>{column.name}</div><hr></hr>
+                                            <div>
+                                                {
+                                                    column.items.map((item, index) => {
+                                                        return (
+                                                            <Draggable
+                                                                key={item.id}
+                                                                draggableId={item.id}
+                                                                index={index}
+                                                            >
+                                                                {(provided, snapshot) => {
+                                                                    return (
 
-                                                                    <div className='column-body' ref={provided.innerRef}
-                                                                        {...provided.draggableProps}
+                                                                        <div className='column-body' ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
 
-                                                                        {...provided.dragHandleProps}
-                                                                        style={{
-                                                                            margin: "5px 5px ",
-                                                                            color: "black",
-                                                                            ...provided.draggableProps.style
-                                                                        }} onClick={() => {
-                                                                            return setIsId(columnId)
-                                                                        }}>
-                                                                        <Kcard title={item.content} onHandleClick={() => deleteIssue(index)}>
+                                                                            {...provided.dragHandleProps}
+                                                                            style={{
+                                                                                margin: "5px 5px ",
+                                                                                color: "black",
+                                                                                ...provided.draggableProps.style
+                                                                            }} onClick={() => {
+                                                                                return setIsId(columnId)
+                                                                            }}>
+                                                                            <Kcard onKeyUp={(event) => onEnterKeyPress(event, item.content)} title={item.content} onHandleClick={() => deleteIssue(index)} onChange={(e) => { setIssue(e.target.value) }} >
 
-                                                                        </Kcard>
+                                                                            </Kcard>
 
-                                                                    </div>
-                                                                );
-                                                            }}
+                                                                        </div>
+                                                                    );
+                                                                }}
 
-                                                        </Draggable>)
-                                                })}
+                                                            </Draggable>)
+                                                    })}
+                                            </div>
+                                            <Button style={isId === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue() }}>Create a issue</Button>
+
+                                            <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isId === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
                                         </div>
-                                        <Button style={isId === columnId ? { display: 'block' } : { display: 'none' }} onClick={() => { onClickCreateIssue() }}>Create a issue</Button>
+                                    )
 
-                                        <TextField sx={{ width: '150px', backgroundColor: 'white' }} style={isTextOpen && (isId === columnId) ? { display: 'block' } : { display: 'none' }} id="outlined-multiline-static" multiline rows={3} label="Add a new issue" variant="outlined" onKeyUp={(event) => onEnterKeyPress(event)} onChange={(e) => { setIssue(e.target.value) }} value={issue} />
-                                    </div>
-                                )
-
-                            }}
-                        </Droppable>
-                    )
-                }
-                )}
-            </DragDropContext>
-            <Button variant='contained' onClick={(e) => createAIssue(e)}>Create</Button>
+                                }}
+                            </Droppable>
+                        )
+                    }
+                    )}
+                </DragDropContext>
+            </div>
             <Modal
                 className='modal-box'
                 open={true}
@@ -250,10 +264,10 @@ const Board = () => {
 
                     <TextField value={issue} sx={{ margin: '10px', padding: '10px', backgroundColor: 'white' }} onChange={(e) => { setIssue(e.target.value) }}></TextField><br />
 
-                    <Button variant='contained' onClick={() => createIssueFromButton()} sx={{ float: 'right' }}>Create a issue</Button>
+                    <Button variant='contained' onClick={() => createIssueFromButton()} sx={{ float: 'right' }}>Create</Button>
                 </Box>
             </Modal>
-        </div>
+        </div >
     );
 };
 
